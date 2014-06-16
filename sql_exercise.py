@@ -12,12 +12,23 @@ def show_problem(problem, problem_num):
 
 def intro():
     print """\
-Introductory SQL exercise. You will write a series of SQL queries accomplishing different tasks. Each problem will include a link to a SQLZoo tutorial that illustrates the concepts required, as well as a link to syntax reference for the kind of query you'll be doing.
+Introductory SQL exercise. You will write a series of SQL queries accomplishing
+different tasks. Each problem will include a link to a SQLZoo tutorial that
+illustrates the concepts required, as well as a link to syntax reference for
+the kind of query you'll be doing.
 
 Type 'help' without quotes for a list of the available commands.
+
+It will be helpful to refer to the list of tables, found by typing in 'tables',
+or viewing the schema of a given table, (ex: schema orders) while formulating
+your queries. If you get very stuck each problem includes a hint on how to
+formulate your query, accessed by typing 'hint'.
 """
+    print ""
+    
 
 def repl(cursor, problem, problem_num):
+    raw_input("[ Press Enter to continue ]")
     show_problem(problem, problem_num)
     while True:
         line = raw_input("SQL> ")
@@ -92,7 +103,8 @@ def help():
     next - Skip the current problem
     quit - Quit the program
 
-Any other commands will be interpreted as a sql query and executed against the problem set database."""
+Any other commands will be interpreted as a sql query and executed against the
+problem set database."""
 
 
 def schema(tokens, cursor):
