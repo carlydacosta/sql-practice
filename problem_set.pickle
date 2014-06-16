@@ -87,7 +87,7 @@ g2
 S"Frequently, you will encounter duplicate data across multiple rows. In our\nsalespeople table schema, we can see that each one is attached to a specific\n'region'. If we query that table for all the different regions that are used,\nsql will return duplicates, one for each salesperson in our table.\n\nTo counter this, we can use the 'distinct' keyword. In our column list, we can\nprepend the keyword to the column name.\n\nExamples: http://sqlzoo.net/wiki/Using_SUM,_Count,_MAX,_DISTINCT_and_ORDER_BY -- 2\n          http://sqlzoo.net/wiki/SUM_and_COUNT -- 2\n\nTask: Write a query that shows all the distinct regions that a salesperson can belong to.\n"
 p37
 sg4
-S'cad48af748619cadb5742b92d9d311a8'
+S'49533da344f3983e407edd084c016509'
 p38
 sg6
 S"Select the distinct entries in the region column from the 'salespeople' table. "
