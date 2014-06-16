@@ -54,7 +54,7 @@ S"Select the common_name column from the 'melons' table where the\nprice column 
 p23
 sa(dp24
 g2
-S"Sometimes, we want to filter down our matched rows even further. We can add\nadditional restrictions to our query using an 'and' clause. It looks like this:\n\n    SELECT <column list> FROM <table> WHERE <expression 1> AND <expression 2>;\n\nExamples: http://sqlzoo.net/wiki/SELECT_basics -- 3, 6\n\nTask: Write a query that shows the melon type and column name for all\nwatermelons that cost more than $5.00.\n"
+S"Sometimes, we want to filter down our matched rows even further. We can add\nadditional restrictions to our query using an 'and' clause. It looks like this:\n\n    SELECT <column list> FROM <table> WHERE <expression 1> AND <expression 2>;\n\nExamples: http://sqlzoo.net/wiki/SELECT_basics -- 3, 6\n\nTask: Write a query that shows the melon type and common name for all\nwatermelons that cost more than $5.00.\n"
 p25
 sg4
 S'c7de1defbf33d3f6585c5f02e210fb86'
@@ -204,7 +204,7 @@ S'Select the id, status, and order_total columns from the `orders` table where t
 p83
 sa(dp84
 g2
-S"Our first technique for writing queries that cross tables is the subselect.\nIt lets us use the results of a query in the where clause of another query. In\nthis case, we can query the 'orders' table for orders matching the 'id' that\ncomes out of a different query. In this way, we can combine the previous two\nqueries into a single query.\n\nExamples: http://sqlzoo.net/wiki/SELECT_within_SELECT_Tutorial -- 1\n\nTask: Write a single query that shows the id, status, and order total for all\norders made by 'phyllis@demizz.edu'.\n"
+S"Our first technique for writing queries that cross tables is the subselect.\nIt lets us use the results of a query in the where clause of another query. In\nthis case, we can query the 'orders' table for orders matching the 'id' that\ncomes out of a different query. In this way, we can combine the previous two\nqueries into a single query.\n\nExamples: http://sqlzoo.net/wiki/SELECT_within_SELECT_Tutorial -- 1\n\nTask: Write a single query that shows the id, status, and order total for all\norders made by 'phyllis@demizz.edu'. Use a subselect to do this.\n"
 p85
 sg4
 S'dffe354f4283b0b6b75e369c3a8f76b9'
@@ -214,7 +214,7 @@ S"Select the id, status, and order_total columns from the 'orders'\ntable where 
 p87
 sa(dp88
 g2
-S' '
+S"Another way we can span tables is the 'join'. Joins can be complicated, but\none way to visualize them is as a venn diagram. Imagine you have a query that\nselects all the customers in the customer table, and another query that selects\nall the orders in the orders table. You can treat these two queries as the two\ncircles in a venn diagram. The intersection of these two sets, then, is all the\norders, attached to their respective customers.\n\nUsing a join, we can get the same results as the previous query by connecting\norders to the customers that made them, then filtering on the email of the\nresulting join.\n\nExamples: http://sqlzoo.net/wiki/The_JOIN_operation -- 1, 2, 3, 4\n\nTask: Write a query that shows the id, status, and order total for all orders\nmade by 'phyllis@demizz.edu'. Use a join to do this.\n"
 p89
 sg4
 S'dffe354f4283b0b6b75e369c3a8f76b9'
@@ -224,38 +224,42 @@ S"Select the id, status, and order_total columns from the 'orders' table joined 
 p91
 sa(dp92
 g2
-g89
+S"We're going to practice more joins. The question we'll eventually answer is,\n'can you show me all the details of the melons attached to a particular order?'\nWe will, but first, we need to understand how our data is organized. We have a\ntable called 'order_items'. This table includes information about all the items\nin a given order. You can think of this table as representing a 'shopping cart'\nof an order.\n\nWe'll start by querying for just half of the information we want: which melons\nwere present in a given order.\n\nTask: Write a query that shows all the melons, quantity, price, all columns\nthat were attached to order #2725.\n"
+p93
 sg4
 S'f6ec6d557943f0084927ba5f2ba27f12'
-p93
+p94
 sg6
 S"Select all columns from the 'order_items' table where the order_id is equal to 2725."
-p94
-sa(dp95
+p95
+sa(dp96
 g2
-g89
+S"Now, in addition to all the pricing information, we'll join the\n'order_items' table to the 'melons' table to show all the information about the\nmelons in any given order.\n\nTask: Write a query that shows the common_name, melon_type, quantity,\nunit_price and total_price for all the melons in order #2725.\n"
+p97
 sg4
 S'951cbd857c721af89be0a6b707c2acef'
-p96
-sg6
-g89
-sa(dp97
-g2
-g89
-sg4
-S'1cfc9f999c0827e40bc48ea91657526d'
 p98
 sg6
-S"Select the sum of the order_total column from the 'orders' table where the salesperson_id is null."
+S"Select the common_name and melon_type from the 'melons' table, left\njoined to the quantity, unit_price, and total_price from the 'order_items'\ntable, using the melon_id to line up the two tables. Limit the results to only\nthe items present in order #2725."
 p99
 sa(dp100
-S'problem'
+g2
+S"In our system, an order can be attached to a salesperson in order to give\nthem commission. However, some orders come in from the web, which means some\norders have no salesperson. This is indicated in our table by having the\nsalesperson id be 'NULL', similar to python's 'None'.\n\nTask: Write a query that shows the total amount of revenue that comes from\ninternet orders."
 p101
-g89
 sg4
-S'734fcd21e88280e27f150f10deb73841'
+S'1cfc9f999c0827e40bc48ea91657526d'
 p102
 sg6
-S"Select the givenname, surname, the sum of the order_total, and the sum of the order_total multiplied by .15 from the table 'salespeople' joined on the 'orders' table, matching the salesperson_id on the order to the id column from the 'salespeople' table. Group the results by the id from the salespeople table."
+S"Select the sum of the order_total column from the 'orders' table\nwhere the salesperson_id is null."
 p103
+sa(dp104
+g2
+S"\nChallenge: Produce a list of all salespeople and the total amount of orders\nthey've sold, while calculating a 15% commission on all of their orders.\nInclude their given name, surname, the total of all their sales, and their\ncommission. Only report one row per salesperson. Include salespeople who have\nnot made any sales.\n\nYou will need 'left join' (http://sqlzoo.net/wiki/LEFT_JOIN) and 'group by'\n(http://sqlzoo.net/wiki/SELECT_.._GROUP_BY) clauses to finish this one.\n"
+p105
+sg4
+S'734fcd21e88280e27f150f10deb73841'
+p106
+sg6
+S"Select the givenname, surname, the sum of the order_total, and the\nsum of the order_total multiplied by .15 from the table 'salespeople' joined on\nthe 'orders' table, matching the salesperson_id on the order to the id column\nfrom the 'salespeople' table. Group the results by the id from the salespeople\ntable."
+p107
 sa.
