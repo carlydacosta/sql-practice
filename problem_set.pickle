@@ -1,0 +1,35 @@
+(lp0
+(dp1
+S'instruction'
+p2
+S'Write a query that shows all the information about all the salespeople in the database. Use a basic SELECT query.\n\n    Examples: http://sqlzoo.net/wiki/SELECT_basics\n    Syntax reference: http://sqlzoo.net/wiki/SELECT_Reference\n'
+p3
+sS'soln_hash'
+p4
+S'121edce7766312b0847b6d2865caaf0e'
+p5
+sS'hint'
+p6
+S"Select all the columns from the 'salespeople' table."
+p7
+sa(dp8
+g2
+S"Write a query that shows all the information about all salespeople from the 'Northwest' region.\n\n    Examples: http://sqlzoo.net/wiki/SELECT_basics\n    Syntax reference: http://sqlzoo.net/wiki/SELECT_Reference\n"
+p9
+sg4
+S'724a00154931048677299a19ccd66aed'
+p10
+sg6
+S"Select all the columns from the 'salespeople' table where the region matches the string 'Northwest'."
+p11
+sa(dp12
+g2
+S"Write a query that shows just the emails of the salespeople from the 'Southwest' region.\n\n    Examples: http://sqlzoo.net/wiki/SELECT_basics\n    Syntax reference: http://sqlzoo.net/wiki/SELECT_Reference\n"
+p13
+sg4
+S'582d32441522fc6c1a90494cd84f6f8f'
+p14
+sg6
+S"Select the email column from the 'salespeople' table where the region matches the string 'Southwest'."
+p15
+sa.
