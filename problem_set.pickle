@@ -2,7 +2,7 @@
 (dp1
 S'instruction'
 p2
-S"The 'select' is the basic query. We use it to extract information from a\ntable. There are a number of clauses to a select statement. Right now, we'll\nconcern ourself with just two: the column list and the table you are querying.\n\nThe format of the basic select statement is\n\n    SELECT <column list> FROM <table name>;\n\nFor now, we can use the wildcard '*' (without quotes) to select all columns\nfrom a given table.\n\nExamples: http://sqlzoo.net/wiki/SELECT_from_WORLD_Tutorial -- 1\n\nTask: Write a query that shows all the information about all the salespeople in\nthe database. Use a basic SELECT query.\n"
+S"The 'SELECT' is the basic query. We use it to extract information from a\ntable. There are a number of clauses to a select statement. Right now, we'll\nconcern ourself with just two: the column list and the table you are querying.\n\nThe format of the basic select statement is\n\n    SELECT <column list> FROM <table name>;\n\nFor now, we can use the wildcard '*' (without quotes) to select all columns\nfrom a given table.\n\nExamples: http://sqlzoo.net/wiki/SELECT_from_WORLD_Tutorial -- 1\n\nTask: Write a query that shows all the information about all the salespeople in\nthe database. Use a basic SELECT query.\n"
 p3
 sS'soln_hash'
 p4

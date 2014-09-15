@@ -1,28 +1,39 @@
 #!/bin/env python
 
+import os
 import sql_problem
 import readline
 import sys
 import pickle
 import sqlite3
 
+# File to store the student's answers
+ANSWER_FILE = 'answers.sql'
+answers = {}
+
+
 def show_problem(problem, problem_num):
-    print "Problem %d"%problem_num
+    print "\nProblem %d"%problem_num
+    print "----------------\n"
     print problem['instruction']
 
 def intro():
     print """\
-Introductory SQL exercise. You will write a series of SQL queries accomplishing
-different tasks. Each problem will include a link to a SQLZoo tutorial that
-illustrates the concepts required, as well as a link to syntax reference for
-the kind of query you'll be doing.
 
-Type 'help' without quotes for a list of the available commands.
+Hackbright Academy - Introductory SQL Exercise 
+----------------------------------------------
 
-It will be helpful to refer to the list of tables, found by typing in 'tables',
-or viewing the schema of a given table, (ex: schema orders) while formulating
+You will write a series of SQL queries accomplishing different tasks. 
+Each problem will include a link to a SQLZoo tutorial that illustrates 
+the concepts required, as well as a link to syntax reference for the 
+kind of query you'll be doing.
+
+Type '.help' without quotes for a list of the available commands.
+
+It will be helpful to refer to the list of tables, found by typing in '.tables',
+or viewing the schema of a given table, (ex: .schema orders) while formulating
 your queries. If you get very stuck each problem includes a hint on how to
-formulate your query, accessed by typing 'hint'.
+formulate your query, accessed by typing '.hint'.
 """
     print ""
     
@@ -30,8 +41,14 @@ formulate your query, accessed by typing 'hint'.
 def repl(cursor, problem, problem_num):
     raw_input("[ Press Enter to continue ]")
     show_problem(problem, problem_num)
+
     while True:
-        line = raw_input("SQL> ")
+        try:
+            line = raw_input("SQL [%d]> " % problem_num)
+        except EOFError:
+            # End of File reached, exit
+            sys.exit(0)
+
         line.strip()
         
         if not line:
@@ -39,27 +56,34 @@ def repl(cursor, problem, problem_num):
 
         tokens = line.split()
 
-        if tokens[0] in ["q", "exit", "quit"]:
+        if tokens[0] in ["q", "exit", "quit", ".quit", ".exit"]:
             sys.exit(0)
 
-        elif tokens[0] == "problem":
+        elif tokens[0] in [".problem", "problem", ".p"]:
             show_problem(problem, problem_num)
 
-        elif tokens[0] == "hint":
+        elif tokens[0] in [".hint", "hint"]:
             print problem['hint']
-        elif tokens[0] == "tables":
+
+        elif tokens[0] in [".tables", ".table", "tables"]:
             tables(cursor)
-        elif tokens[0] == "schema":
+
+        elif tokens[0] in [".schema", "schema"]:
             schema(tokens, cursor)
-        elif tokens[0] == "help":
+
+        elif tokens[0] in [".help", ".h", "help", "?", ".?"]:
             help()
-        elif tokens[0] == "next":
-            print "Skipping problem %d"%problem_num
+
+        elif tokens[0] in [".next", ".skip", "next", "skip"]:
+            print "Skipping problem %d" % problem_num
             return
+
         else:
             result = execute(line, problem, cursor)
             if result:
+                answers[problem_num] = line
                 show_success(line)
+                save_answers()
                 return
 
 def show_success(line):
@@ -77,7 +101,9 @@ def execute(line, problem, cursor):
 
     result_str = sql_problem.result_to_str(results)
     print result_str
+
     return sql_problem.check_solution(problem, result_str)
+
 
 def tables(cursor):
     query = """select name from sqlite_master where type='table';"""
@@ -94,17 +120,20 @@ def tables(cursor):
     print "The following tables are available:\n", output
 
 def help():
-    print """The following commands are available:
+    print """
+The following commands are available:
 
-    problem - Show the current problem statement
-    hint - Show a hint about how to formulate the query
-    tables - Show all the tables available in the database
-    schema <table_name> - Show the schema used to define a given table
-    next - Skip the current problem
-    quit - Quit the program
+    .help    - Display this message
+    .hint    - Show a hint about how to formulate the query
+    .next    - Skip the current problem
+    .problem - Show the current problem statement
+    .quit    - Quit the program
+    .schema <table_name> - Show the schema used to define a given table
+    .tables  - Show all the tables available in the database
 
-Any other commands will be interpreted as a sql query and executed against the
-problem set database."""
+Any other commands will be interpreted as a SQL query and executed against the
+problem set database.
+"""
 
 
 def schema(tokens, cursor):
@@ -132,10 +161,60 @@ def load_problems():
     with open("problem_set.pickle") as f:
         return pickle.load(f)
 
+# if an answers file already exists, load it
+def load_answers():
+    if not os.path.isfile(ANSWER_FILE):
+        return
+
+    with open(ANSWER_FILE, 'r') as f:
+        probnum = 0
+        query = ''
+
+        line = f.readline()
+
+        while line:
+            line = line.strip()
+
+            # Check for a comment
+            if line[0:10] == '-- Problem':
+                probnum = line[11:]
+                try:
+                    probnum = int(probnum)
+                except:
+                    pass
+
+                answers.setdefault(probnum, '')
+
+            # Check for SQL statement
+            elif line != '' and probnum > 0:
+                if answers.get(probnum) != '':
+                    answers[probnum] += "\n";
+                answers[probnum] += line;
+
+            # print "read: ", line
+            line = f.readline()
+
+    # print "answers"
+    # print answers
+
+
+# Save student answers to a file
+def save_answers():
+    with open(ANSWER_FILE, 'w') as f:
+        for key in sorted(answers.keys()):
+            f.write("-- Problem %s\n" % key)
+            f.write("%s\n\n" % answers.get(key, ''))
+
+
 def main():
+    # Connect to SQLite
     cursor = sql_problem.connect()
     problems = load_problems()
+    load_answers()
+    
+    # Display Into Message
     intro()
+    
     for idx, problem in enumerate(problems):
         repl(cursor, problem, idx+1)
 
